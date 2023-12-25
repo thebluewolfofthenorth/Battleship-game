@@ -1,9 +1,12 @@
 import random
 
+# Constants
 GRID_SIZE = 8
 NUM_SHIPS = 4
 SHIP_SIZE = 3
 SHIP_SYMBOL = '@'
+HIT_SYMBOL = 'X'
+MISS_SYMBOL = '0'
 
 # Initialize the game board
 def create_board(size):
@@ -14,15 +17,24 @@ def print_board(board):
     for row in board:
         print(" ".join(row))
 
-board = create_board(GRID_SIZE)
-print("Initial 8x8 Board:")
-print_board(board)
+# Initialize the guess board
+def create_guess_board(size):
+    return [["~"] * size for _ in range(size)]
+
+# Function to handle player's guess
+def player_guess(board, guess_board, target_row, target_col):
+    if board[target_row][target_col] == SHIP_SYMBOL:
+        guess_board[target_row][target_col] = HIT_SYMBOL
+        print("Hit at " + chr(65 + target_row) + str(target_col + 1))
+    else:
+        guess_board[target_row][target_col] = MISS_SYMBOL
+        print("Miss at " + chr(65 + target_row) + str(target_col + 1))
 
 # Place ships randomly on the board
 def place_ships(board, num_ships, ship_size):
     for _ in range(num_ships):
         while True:
-            row, col = random.randint(0, size - 1), random.randint(0, size - 1)
+            row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
             orientation = random.choice(['horizontal', 'vertical'])
             
             if can_place_ship(board, row, col, ship_size, orientation):
@@ -49,25 +61,23 @@ def set_ship(board, row, col, ship_size, orientation):
         for r in range(row, row + ship_size):
             board[r][col] = SHIP_SYMBOL
 
-# Place ships randomly on the board
-def place_ships(board, num_ships, ship_size):
-    for _ in range(num_ships):
-        while True:
-            row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
-            orientation = random.choice(['horizontal', 'vertical'])
-            
-            if can_place_ship(board, row, col, ship_size, orientation):
-                set_ship(board, row, col, ship_size, orientation)
-                break
 
+# Create the game board and place ships
 board = create_board(GRID_SIZE)
+guess_board = create_guess_board(GRID_SIZE)
 place_ships(board, NUM_SHIPS, SHIP_SIZE)
 
-print("Board with Ships Placed:")
+# Testing the setup with a sample guess (replace with actual gameplay logic later)
+print("Player's Board View:")
 print_board(board)
 
-# Add functions to print the board, handle player moves, and game logic
+# Sample guess (row 2, column 3)
+player_guess(board, guess_board, 2, 3)  # Replace with player input
 
+print("\nPlayer's Guess Board:")
+print_board(guess_board)
+
+# Game rules display
 def display_game_rules():
     print("Welcome to Battleship the game in Python.")
     print("Board size: 8x8")
