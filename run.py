@@ -124,10 +124,10 @@ def update_board_after_move(board, guess_board, row, col, is_player_turn):
     """Update the board after a move."""
     pass
 
-def is_game_over(board):
+def is_game_over(board, num_ships, ship_size):
     """Check if the game is over (all ships have been hit)."""
     hits = sum(row.count(HIT_SYMBOL) for row in board)
-    total_ship_segments = NUM_SHIPS * SHIP_SIZE
+    total_ship_segments = num_ships * ship_size
     return hits == total_ship_segments
 
 def main():
