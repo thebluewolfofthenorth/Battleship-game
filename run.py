@@ -141,16 +141,17 @@ def main():
     guess_board = create_guess_board(GRID_SIZE)
     place_ships(board, NUM_SHIPS, SHIP_SIZE)
 
-    while not is_game_over(board):
+    while True:
         print(f"\n{player_name}'s Guesses:")
         print_board(guess_board)
+
 
         # Player's turn
         player_row, player_col = player_move(guess_board)
         player_guess(board, guess_board, player_row, player_col)
         update_board_after_move(board, guess_board, player_row, player_col, True)
 
-        if is_game_over(guess_board):
+        if is_game_over(guess_board, NUM_SHIPS, SHIP_SIZE):
             print(f"Congratulations, {player_name}! You have won the game!")
             break
 
@@ -163,7 +164,7 @@ def main():
             print(f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}.")
             board[enemy_row][enemy_col] = MISS_SYMBOL
 
-        if is_game_over(board):
+        if is_game_over(board, NUM_SHIPS, SHIP_SIZE):
             print(f"Sorry, {player_name}, you lost the game.")
             break
 
