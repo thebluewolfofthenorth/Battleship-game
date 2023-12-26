@@ -21,6 +21,17 @@ def print_board(board):
 def create_guess_board(size):
     return [["~"] * size for _ in range(size)]
 
+
+# Game rules display
+def display_game_rules():
+    print("Welcome to Battleship the game in Python.")
+    print("Board size: 8x8")
+    print("Number of ships: 4")
+    print("Length of each ship: 3")
+    print("Top left corner is: Row 0, Column 0")
+
+display_game_rules()
+
 # Function to handle player's guess
 def player_guess(board, guess_board, target_row, target_col):
     if board[target_row][target_col] == SHIP_SYMBOL:
@@ -67,6 +78,7 @@ board = create_board(GRID_SIZE)
 guess_board = create_guess_board(GRID_SIZE)
 place_ships(board, NUM_SHIPS, SHIP_SIZE)
 
+
 def player_move(guess_board):
     while True:
         try:
@@ -96,38 +108,39 @@ def update_board_after_move(board, guess_board, row, col):
 
 def is_game_over(board):
     # Add logic to check if the game is over (all ships have been hit)
-
 def main():
-    # Setup
     board = create_board(GRID_SIZE)
     guess_board = create_guess_board(GRID_SIZE)
     place_ships(board, NUM_SHIPS, SHIP_SIZE)
 
     while not is_game_over(board):
-        print("Your Board:")
-        print_board(board)
+        print("\nYour Guesses:")
+        print_board(guess_board)
 
         # Player's turn
         player_row, player_col = player_move(guess_board)
         player_guess(board, guess_board, player_row, player_col)
-        update_board_after_move(board, guess_board, player_row, player_col)
+        update_board_after_move(board, guess_board, player_row, player_col, True)
 
-        if is_game_over(board):
-            print("Game over! You win!")
+        if is_game_over(guess_board):
+            print("Congratulations! You have won the game!")
             break
 
         # Enemy's turn
         enemy_row, enemy_col = enemy_move(board)
         # Update the board with the enemy's move and provide feedback
+        update_board_after_move(board, guess_board, enemy_row, enemy_col, False)
 
         if is_game_over(board):
-            print("Game over! You lose.")
+            print("Sorry, you lost the game.")
             break
+
+        print("\nYour Board after Enemy's Move:")
+        print_board(board)
 
 if __name__ == "__main__":
     display_game_rules()
     main()
-
 
 # Testing the setup with a sample guess (replace with actual gameplay logic later)
 print("Player's Board View:")
@@ -141,13 +154,3 @@ print_board(guess_board)
 
 
 
-
-# Game rules display
-def display_game_rules():
-    print("Welcome to Battleship the game in Python.")
-    print("Board size: 8x8")
-    print("Number of ships: 4")
-    print("Length of each ship: 3")
-    print("Top left corner is: Row 0, Column 0")
-
-display_game_rules()
