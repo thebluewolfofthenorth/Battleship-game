@@ -10,20 +10,24 @@ MISS_SYMBOL = '0'
 
 # Initialize the game board
 def create_board(size):
+    """Initialize the game board with the specified size."""
     return [["."] * size for _ in range(size)]
 
 # Function to display the board
 def print_board(board):
+    """Print the current state of the board."""
     for row in board:
         print(" ".join(row))
 
 # Initialize the guess board
 def create_guess_board(size):
+    """Initialize the guess board with the specified size."""
     return [["~"] * size for _ in range(size)]
 
 
 # Game rules display
 def display_game_rules():
+    """Display the game rules to the player."""
     print("Welcome to Battleship the game in Python.")
     print("Board size: 8x8")
     print("Number of ships: 4")
@@ -34,6 +38,7 @@ display_game_rules()
 
 # Function to handle player's guess
 def player_guess(board, guess_board, target_row, target_col):
+    """Process the player's guess and update the guess board."""
     if board[target_row][target_col] == SHIP_SYMBOL:
         guess_board[target_row][target_col] = HIT_SYMBOL
         print("Hit at " + chr(65 + target_row) + str(target_col + 1))
@@ -43,6 +48,7 @@ def player_guess(board, guess_board, target_row, target_col):
 
 # Place ships randomly on the board
 def place_ships(board, num_ships, ship_size):
+    """Place ships randomly on the board."""
     for _ in range(num_ships):
         while True:
             row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
@@ -54,6 +60,7 @@ def place_ships(board, num_ships, ship_size):
 
 # Check if a ship can be placed at the specified location
 def can_place_ship(board, row, col, ship_size, orientation):
+    """Check if a ship can be placed at the specified location."""
     if orientation == 'horizontal':
         if col + ship_size > GRID_SIZE:
             return False
@@ -65,6 +72,7 @@ def can_place_ship(board, row, col, ship_size, orientation):
 
 # Place the ship on the board
 def set_ship(board, row, col, ship_size, orientation):
+    """Place the ship on the board at the specified location."""
     if orientation == 'horizontal':
         for c in range(col, col + ship_size):
             board[row][c] = SHIP_SYMBOL
@@ -80,6 +88,7 @@ place_ships(board, NUM_SHIPS, SHIP_SIZE)
 
 
 def player_move(guess_board):
+    """Get the player's move and validate it."""
     while True:
         try:
             user_input = input("Enter your move (e.g., A3): ").upper()
@@ -97,18 +106,23 @@ def player_move(guess_board):
 
 
 def enemy_move(player_board):
+    """Randomly generate a move for the enemy."""
     while True:
         row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         if player_board[row][col] == '.':
             return row, col
-
-
-def update_board_after_move(board, guess_board, row, col):
-    # Add logic to update the board after a move
+def update_board_after_move(board, guess_board, row, col, is_player_turn):
+    """Update the board after a move."""
+    pass
 
 def is_game_over(board):
-    # Add logic to check if the game is over (all ships have been hit)
+    """Check if the game is over (all ships have been hit)."""
+    hits = sum(row.count(HIT_SYMBOL) for row in board)
+    total_ship_segments = NUM_SHIPS * SHIP_SIZE
+    return hits == total_ship_segments
+
 def main():
+    """Main function to run the Battleship game."""
     board = create_board(GRID_SIZE)
     guess_board = create_guess_board(GRID_SIZE)
     place_ships(board, NUM_SHIPS, SHIP_SIZE)
@@ -128,8 +142,12 @@ def main():
 
         # Enemy's turn
         enemy_row, enemy_col = enemy_move(board)
-        # Update the board with the enemy's move and provide feedback
-        update_board_after_move(board, guess_board, enemy_row, enemy_col, False)
+        if board[enemy_row][enemy_col] == SHIP_SYMBOL:
+            print(f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!")
+            board[enemy_row][enemy_col] = HIT_SYMBOL
+        else:
+            print(f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}.")
+            board[enemy_row][enemy_col] = MISS_SYMBOL
 
         if is_game_over(board):
             print("Sorry, you lost the game.")
@@ -141,6 +159,7 @@ def main():
 if __name__ == "__main__":
     display_game_rules()
     main()
+
 
 # Testing the setup with a sample guess (replace with actual gameplay logic later)
 print("Player's Board View:")
