@@ -8,6 +8,16 @@ SHIP_SYMBOL = '@'
 HIT_SYMBOL = 'X'
 MISS_SYMBOL = '0'
 
+def get_player_name():
+    """Prompt the player to enter their name, ensuring it's valid (letters only, single word)."""
+    while True:
+        name = input("Please enter your name (letters only, no spaces): ")
+        if name.isalpha() and " " not in name:
+            return name
+        else:
+            print("Invalid name. Please enter a name with letters only and no spaces.")
+
+
 # Initialize the game board
 def create_board(size):
     """Initialize the game board with the specified size."""
@@ -16,8 +26,9 @@ def create_board(size):
 # Function to display the board
 def print_board(board):
     """Print the current state of the board."""
-    for row in board:
-        print(" ".join(row))
+    print("  " + " ".join(str(i + 1) for i in range(GRID_SIZE)))
+    for i, row in enumerate(board):
+        print(chr(65 + i) + " " + " ".join(row))
 
 # Initialize the guess board
 def create_guess_board(size):
@@ -32,9 +43,7 @@ def display_game_rules():
     print("Board size: 8x8")
     print("Number of ships: 4")
     print("Length of each ship: 3")
-    print("Top left corner is: Row 0, Column 0")
-
-display_game_rules()
+    print("Top left corner is: Row A, Column 1")
 
 # Function to handle player's guess
 def player_guess(board, guess_board, target_row, target_col):
@@ -123,12 +132,17 @@ def is_game_over(board):
 
 def main():
     """Main function to run the Battleship game."""
+    player_name = get_player_name()
+    print(f"Welcome to Battleship, {player_name}!")
+
+    display_game_rules()
+
     board = create_board(GRID_SIZE)
     guess_board = create_guess_board(GRID_SIZE)
     place_ships(board, NUM_SHIPS, SHIP_SIZE)
 
     while not is_game_over(board):
-        print("\nYour Guesses:")
+        print(f"\n{player_name}'s Guesses:")
         print_board(guess_board)
 
         # Player's turn
@@ -137,7 +151,7 @@ def main():
         update_board_after_move(board, guess_board, player_row, player_col, True)
 
         if is_game_over(guess_board):
-            print("Congratulations! You have won the game!")
+            print(f"Congratulations, {player_name}! You have won the game!")
             break
 
         # Enemy's turn
@@ -150,7 +164,7 @@ def main():
             board[enemy_row][enemy_col] = MISS_SYMBOL
 
         if is_game_over(board):
-            print("Sorry, you lost the game.")
+            print(f"Sorry, {player_name}, you lost the game.")
             break
 
         print("\nYour Board after Enemy's Move:")
