@@ -1,3 +1,4 @@
+import os
 import random
 
 # Constants
@@ -7,6 +8,15 @@ SHIP_SIZE = 3
 SHIP_SYMBOL = 'S'
 HIT_SYMBOL = 'X'
 MISS_SYMBOL = '0'
+
+def clear_screen():
+    """Clears the terminal screen."""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def get_player_preference():
+    """Asks the player if they want to enable screen clearing."""
+    choice = input("Do you want to clear the screen each turn? (yes/no): ").lower()
+    return choice == "yes"
 
 def get_player_name():
     """Prompt the player to enter their name, ensuring it's valid (letters only, single word)."""
@@ -153,6 +163,9 @@ def is_game_over(player_board, guess_board):
 def main():
     """Main function to run the Battleship game."""
     player_name = get_player_name()
+    clear_screen_enabled = get_player_preference()
+    last_move_summary = ""  # Initialize an empty string for the last move summary
+
     print(f"Welcome to Battleship, {player_name}!")
 
     player_board = create_board(GRID_SIZE)  # Player's board
@@ -165,12 +178,21 @@ def main():
     enemy_previous_moves = set()  # Track enemy's previous moves
 
     while True:
+        if clear_screen_enabled:
+            clear_screen()
+            print(last_move_summary)  # Display summary of the last move
+
+ 
         print(f"\n{player_name}'s Guesses:")
         print_board(guess_board, hide_ships=True)
 
         # Player's turn
         player_row, player_col = player_move(guess_board)
-        player_guess(enemy_board, guess_board, player_row, player_col)
+        last_move_summary = f"Last Move: You guessed {chr(65 + player_row)}{player_col + 1} - "
+        guess_result = player_guess(enemy_board, guess_board, player_row, player_col)
+        last_move_summary += guess_result
+        update_board_after_move(enemy_board, guess_board, player_row, player_col, True)
+
 
         if is_game_over(player_board, guess_board):
             print(f"Congratulations, {player_name}! You have won the game!")
