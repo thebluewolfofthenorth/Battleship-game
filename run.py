@@ -24,11 +24,13 @@ def create_board(size):
     return [["."] * size for _ in range(size)]
 
 # Function to display the board
-def print_board(board):
+def print_board(board, hide_ships=False):
     """Print the current state of the board."""
     print("  " + " ".join(str(i + 1) for i in range(GRID_SIZE)))
     for i, row in enumerate(board):
-        print(chr(65 + i) + " " + " ".join(row))
+        print_row = [HIT_SYMBOL if cell == SHIP_SYMBOL else cell for cell in row] if hide_ships else row
+        print(chr(65 + i) + " " + " ".join(print_row))
+
 
 # Initialize the guess board
 def create_guess_board(size):
@@ -44,6 +46,8 @@ def display_game_rules():
     print("Number of ships: 4")
     print("Length of each ship: 3")
     print("Top left corner is: Row A, Column 1")
+    print("'S' represents ships on your board.")
+
 
 # Function to handle player's guess
 def player_guess(board, guess_board, target_row, target_col):
@@ -141,18 +145,19 @@ def update_board_after_move(board, guess_board, row, col, is_player_turn):
     """Update the board after a move."""
     pass
 
-def is_game_over(board, num_ships, ship_size):
-    """Check if the game is over (all ships have been hit)."""
-    hits = sum(row.count(HIT_SYMBOL) for row in board)
-    total_ship_segments = num_ships * ship_size
-    return hits == total_ship_segments
+def is_game_over(player_board, guess_board):
+    """Check if the game is over (all ships on either board have been hit)."""
+    player_hits = sum(row.count(HIT_SYMBOL) for row in player_board)
+    enemy_hits = sum(row.count(HIT_SYMBOL) for row in guess_board)
+    total_ship_segments = NUM_SHIPS * SHIP_SIZE
+    return player_hits == total_ship_segments or enemy_hits == total_ship_segments
+
+
 
 def main():
     """Main function to run the Battleship game."""
     player_name = get_player_name()
     print(f"Welcome to Battleship, {player_name}!")
-
-    display_game_rules()
 
     player_board = create_board(GRID_SIZE)  # Player's board
     enemy_board = create_board(GRID_SIZE)  # Enemy's board
@@ -165,33 +170,39 @@ def main():
 
     while True:
         print(f"\n{player_name}'s Guesses:")
-        print_board(guess_board)
+        print_board(guess_board, hide_ships=True)
 
-
-       # Player's turn
+        # Player's turn
         player_row, player_col = player_move(guess_board)
-        player_guess(board, guess_board, player_row, player_col)
-        update_board_after_move(board, guess_board, player_row, player_col, True)
+        player_guess(enemy_board, guess_board, player_row, player_col)
+        update_board_after_move(enemy_board, guess_board, player_row, player_col, True)
 
-        if is_game_over(guess_board, NUM_SHIPS, SHIP_SIZE):
+        if is_game_over(guess_board):
             print(f"Congratulations, {player_name}! You have won the game!")
             break
 
         # Enemy's turn
-        enemy_row, enemy_col = enemy_move(board, enemy_previous_moves)
-        if board[enemy_row][enemy_col] == SHIP_SYMBOL:
+        enemy_row, enemy_col = enemy_move(player_board, enemy_previous_moves)
+        if player_board[enemy_row][enemy_col] == SHIP_SYMBOL:
             print(f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!")
-            board[enemy_row][enemy_col] = HIT_SYMBOL
+            player_board[enemy_row][enemy_col] = HIT_SYMBOL
         else:
             print(f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}.")
-            board[enemy_row][enemy_col] = MISS_SYMBOL
+            player_board[enemy_row][enemy_col] = MISS_SYMBOL
 
-        if is_game_over(board, NUM_SHIPS, SHIP_SIZE):
+        if is_game_over(player_board):
             print(f"Sorry, {player_name}, you lost the game.")
             break
 
+        if is_game_over(player_board, guess_board):
+            if sum(row.count(HIT_SYMBOL) for row in guess_board) == NUM_SHIPS * SHIP_SIZE:
+                print(f"Congratulations, {player_name}! You have won the game!")
+            else:
+                print(f"Sorry, {player_name}, you lost the game.")
+            break
+
         print("\nYour Board after Enemy's Move:")
-        print_board(board)
+        print_board(player_board)
 
 if __name__ == "__main__":
     display_game_rules()
