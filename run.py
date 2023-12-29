@@ -127,6 +127,8 @@ def player_move(guess_board):
             print("Invalid input. Please enter a valid coordinate.")
 
 
+
+        
 def enemy_move(player_board, previous_moves):
     """Generate a smarter move for the enemy. Avoid repeating previous moves."""
     while True:
@@ -135,14 +137,6 @@ def enemy_move(player_board, previous_moves):
             previous_moves.add((row, col))
             return row, col
 
-
-def enemy_move(player_board, previous_moves):
-    """Generate a smarter move for the enemy. Avoid repeating previous moves."""
-    while True:
-        row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
-        if (row, col) not in previous_moves:
-            previous_moves.add((row, col))
-            return row, col
         
 def update_board_after_move(board, guess_board, row, col, is_player_turn):
     """Update the board after a move."""
