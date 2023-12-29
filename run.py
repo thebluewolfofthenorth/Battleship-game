@@ -70,7 +70,6 @@ def player_guess(board, guess_board, target_row, target_col):
     print(result)
     return result
 
-
 # Place ships randomly on the board
 def place_ships(board, num_ships, ship_size):
     """Place ships randomly on the board."""
@@ -183,8 +182,12 @@ def main():
             clear_screen()
             print(last_move_summary)  # Display summary of the last move
 
- 
-        print(f"\n{player_name}'s Guesses:")
+        # Displaying player's board
+        print(f"\n{player_name}'s Board:")
+        print_board(player_board)
+
+        # Displaying guesses on the enemy's board
+        print(f"\n{player_name}'s Guesses on Enemy's Board:")
         print_board(guess_board, hide_ships=True)
 
         # Player's turn
@@ -204,9 +207,11 @@ def main():
         if player_board[enemy_row][enemy_col] == SHIP_SYMBOL:
             print(f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!")
             player_board[enemy_row][enemy_col] = HIT_SYMBOL
+            last_move_summary = f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!"
         else:
             print(f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}.")
             player_board[enemy_row][enemy_col] = MISS_SYMBOL
+            last_move_summary = f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}."
 
         if is_game_over(player_board, guess_board):
             if sum(row.count(HIT_SYMBOL) for row in guess_board) == NUM_SHIPS * SHIP_SIZE:
@@ -214,6 +219,14 @@ def main():
             else:
                 print(f"Sorry, {player_name}, you lost the game.")
             break
+
+        # Displaying player's board after enemy's move
+        print("\nYour Board after Enemy's Move:")
+        print_board(player_board)
+        if clear_screen_enabled:
+            print(last_move_summary)  # Display summary of the last move
+
+ 
 
         print("\nYour Board after Enemy's Move:")
         print_board(player_board)
