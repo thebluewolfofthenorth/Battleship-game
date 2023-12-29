@@ -192,26 +192,9 @@ def main():
 
         # Player's turn
         player_row, player_col = player_move(guess_board)
-        last_move_summary = f"Last Move: You guessed {chr(65 + player_row)}{player_col + 1} - "
         guess_result = player_guess(enemy_board, guess_board, player_row, player_col)
-        last_move_summary += guess_result
+        last_move_summary = f"Last Move: You guessed {chr(65 + player_row)}{player_col + 1} - {guess_result}"
         update_board_after_move(enemy_board, guess_board, player_row, player_col, True)
-
-
-        if is_game_over(player_board, guess_board):
-            print(f"Congratulations, {player_name}! You have won the game!")
-            break
-
-        # Enemy's turn
-        enemy_row, enemy_col = enemy_move(player_board, enemy_previous_moves)
-        if player_board[enemy_row][enemy_col] == SHIP_SYMBOL:
-            print(f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!")
-            player_board[enemy_row][enemy_col] = HIT_SYMBOL
-            last_move_summary = f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!"
-        else:
-            print(f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}.")
-            player_board[enemy_row][enemy_col] = MISS_SYMBOL
-            last_move_summary = f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}."
 
         if is_game_over(player_board, guess_board):
             if sum(row.count(HIT_SYMBOL) for row in guess_board) == NUM_SHIPS * SHIP_SIZE:
@@ -219,6 +202,21 @@ def main():
             else:
                 print(f"Sorry, {player_name}, you lost the game.")
             break
+
+
+        # Enemy's turn
+        enemy_row, enemy_col = enemy_move(player_board, enemy_previous_moves)
+        if player_board[enemy_row][enemy_col] == SHIP_SYMBOL:
+            player_board[enemy_row][enemy_col] = HIT_SYMBOL
+            last_move_summary = f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!"
+        else:
+            player_board[enemy_row][enemy_col] = MISS_SYMBOL
+            last_move_summary = f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}."
+
+        if is_game_over(player_board, guess_board):
+            print(f"Sorry, {player_name}, you lost the game.")
+            break
+
 
         # Displaying player's board after enemy's move
         print("\nYour Board after Enemy's Move:")
