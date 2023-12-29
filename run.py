@@ -175,7 +175,7 @@ def main():
         if is_game_over(player_board, guess_board):
             print(f"Congratulations, {player_name}! You have won the game!")
             break
-        
+
         # Enemy's turn
         enemy_row, enemy_col = enemy_move(player_board, enemy_previous_moves)
         if player_board[enemy_row][enemy_col] == SHIP_SYMBOL:
@@ -184,10 +184,6 @@ def main():
         else:
             print(f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}.")
             player_board[enemy_row][enemy_col] = MISS_SYMBOL
-
-        if is_game_over(player_board):
-            print(f"Sorry, {player_name}, you lost the game.")
-            break
 
         if is_game_over(player_board, guess_board):
             if sum(row.count(HIT_SYMBOL) for row in guess_board) == NUM_SHIPS * SHIP_SIZE:
