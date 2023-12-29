@@ -63,12 +63,11 @@ def player_guess(board, guess_board, target_row, target_col):
     """Process the player's guess and update the guess board."""
     if board[target_row][target_col] == SHIP_SYMBOL:
         guess_board[target_row][target_col] = HIT_SYMBOL
-        result = "Hit at " + chr(65 + target_row) + str(target_col + 1)
+        return f"Hit at {chr(65 + target_row)}{target_col + 1}"
     else:
         guess_board[target_row][target_col] = MISS_SYMBOL
-        result = "Miss at " + chr(65 + target_row) + str(target_col + 1)
-    print(result)
-    return result
+        return f"Miss at {chr(65 + target_row)}{target_col + 1}"
+
 
 # Place ships randomly on the board
 def place_ships(board, num_ships, ship_size):
@@ -145,14 +144,19 @@ def enemy_move(player_board, previous_moves):
         row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         if (row, col) not in previous_moves:
             previous_moves.add((row, col))
-            return row, col
+            if player_board[row][col] == SHIP_SYMBOL:
+                player_board[row][col] = HIT_SYMBOL
+                return f"Enemy hit your ship at {chr(65 + row)}{col + 1}!"
+            else:
+                player_board[row][col] = MISS_SYMBOL
+                return f"Enemy missed at {chr(65 + row)}{col + 1}."
 
         
 def update_board_after_move(board, guess_board, row, col, is_player_turn):
     """Update the board after a move."""
     pass
 
-def is_game_over(player_board, guess_board):
+def is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
     """Check if the game is over (all ships on either board have been hit)."""
     player_hits = sum(row.count(HIT_SYMBOL) for row in player_board)
     enemy_hits = sum(row.count(HIT_SYMBOL) for row in guess_board)
@@ -177,62 +181,70 @@ def main():
 
     enemy_previous_moves = set()  # Track enemy's previous moves
 
+def main():
+    """Main function to run the Battleship game."""
+    player_name = get_player_name()
+    clear_screen_enabled = get_player_preference()
+    last_move_summary = ""  # Initialize an empty string for the last move summary
+
+    print(f"Welcome to Battleship, {player_name}!")
+
+    player_board = create_board(GRID_SIZE)  # Player's board
+    enemy_board = create_board(GRID_SIZE)  # Enemy's board
+    guess_board = create_guess_board(GRID_SIZE)  # Player's guess board
+
+    place_ships(player_board, NUM_SHIPS, SHIP_SIZE)  # Place player's ships
+    place_ships(enemy_board, NUM_SHIPS, SHIP_SIZE)  # Place enemy's ships
+
+    enemy_previous_moves = set()  # Track enemy's previous moves
+
+def main():
+    player_name = get_player_name()
+    clear_screen_enabled = get_player_preference()
+    last_move_summary = ""
+
+    print(f"Welcome to Battleship, {player_name}!")
+
+    player_board = create_board(GRID_SIZE)
+    enemy_board = create_board(GRID_SIZE)
+    guess_board = create_guess_board(GRID_SIZE)
+
+    place_ships(player_board, NUM_SHIPS, SHIP_SIZE)
+    place_ships(enemy_board, NUM_SHIPS, SHIP_SIZE)
+
+    enemy_previous_moves = set()
+
     while True:
-        if clear_screen_enabled:
+        if clear_screen_enabled and last_move_summary:
             clear_screen()
-            print(last_move_summary)  # Display summary of the last move
+            print(last_move_summary)
 
-        # Displaying player's board
-        print(f"\n{player_name}'s Board:")
-        print_board(player_board)
+        if not clear_screen_enabled or last_move_summary:
+            print(f"\n{player_name}'s Board:")
+            print_board(player_board)
+            print(f"\n{player_name}'s Guesses on Enemy's Board:")
+            print_board(guess_board, hide_ships=True)
 
-        # Displaying guesses on the enemy's board
-        print(f"\n{player_name}'s Guesses on Enemy's Board:")
-        print_board(guess_board, hide_ships=True)
-
-        # Player's turn
         player_row, player_col = player_move(guess_board)
-        guess_result = player_guess(enemy_board, guess_board, player_row, player_col)
-        last_move_summary = f"Last Move: You guessed {chr(65 + player_row)}{player_col + 1} - {guess_result}"
-        update_board_after_move(enemy_board, guess_board, player_row, player_col, True)
+        player_result = player_guess(enemy_board, guess_board, player_row, player_col)
+        last_move_summary = f"Last Move: {player_result}"
 
-        if is_game_over(player_board, guess_board):
-            if sum(row.count(HIT_SYMBOL) for row in guess_board) == NUM_SHIPS * SHIP_SIZE:
-                print(f"Congratulations, {player_name}! You have won the game!")
-            else:
-                print(f"Sorry, {player_name}, you lost the game.")
+        if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
+            print(f"Congratulations, {player_name}! You have won the game!")
             break
 
+        enemy_result = enemy_move(player_board, enemy_previous_moves)
+        last_move_summary += f" | {enemy_result}"
 
-        # Enemy's turn
-        enemy_row, enemy_col = enemy_move(player_board, enemy_previous_moves)
-        if player_board[enemy_row][enemy_col] == SHIP_SYMBOL:
-            player_board[enemy_row][enemy_col] = HIT_SYMBOL
-            last_move_summary = f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!"
-        else:
-            player_board[enemy_row][enemy_col] = MISS_SYMBOL
-            last_move_summary = f"Enemy missed at {chr(65 + enemy_row)}{enemy_col + 1}."
-
-        if is_game_over(player_board, guess_board):
+        if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
             print(f"Sorry, {player_name}, you lost the game.")
             break
 
-
-        # Displaying player's board after enemy's move
-        print("\nYour Board after Enemy's Move:")
-        print_board(player_board)
-        if clear_screen_enabled:
-            print(last_move_summary)  # Display summary of the last move
-
- 
-
-        print("\nYour Board after Enemy's Move:")
-        print_board(player_board)
+        if not clear_screen_enabled:
+            print(last_move_summary)
 
 if __name__ == "__main__":
-    display_game_rules()
     main()
-
 
 # Testing the setup with a sample guess (replace with actual gameplay logic later)
 print("Player's Board View:")
