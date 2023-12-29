@@ -182,23 +182,8 @@ def main():
     enemy_previous_moves = set()  # Track enemy's previous moves
 
 def main():
-    """Main function to run the Battleship game."""
-    player_name = get_player_name()
-    clear_screen_enabled = get_player_preference()
-    last_move_summary = ""  # Initialize an empty string for the last move summary
+    display_game_rules() 
 
-    print(f"Welcome to Battleship, {player_name}!")
-
-    player_board = create_board(GRID_SIZE)  # Player's board
-    enemy_board = create_board(GRID_SIZE)  # Enemy's board
-    guess_board = create_guess_board(GRID_SIZE)  # Player's guess board
-
-    place_ships(player_board, NUM_SHIPS, SHIP_SIZE)  # Place player's ships
-    place_ships(enemy_board, NUM_SHIPS, SHIP_SIZE)  # Place enemy's ships
-
-    enemy_previous_moves = set()  # Track enemy's previous moves
-
-def main():
     player_name = get_player_name()
     clear_screen_enabled = get_player_preference()
     last_move_summary = ""
