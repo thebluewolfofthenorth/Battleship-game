@@ -150,7 +150,6 @@ def is_game_over(player_board, guess_board):
     return player_hits == total_ship_segments or enemy_hits == total_ship_segments
 
 
-
 def main():
     """Main function to run the Battleship game."""
     player_name = get_player_name()
@@ -172,12 +171,11 @@ def main():
         # Player's turn
         player_row, player_col = player_move(guess_board)
         player_guess(enemy_board, guess_board, player_row, player_col)
-        update_board_after_move(enemy_board, guess_board, player_row, player_col, True)
 
-        if is_game_over(guess_board):
+        if is_game_over(player_board, guess_board):
             print(f"Congratulations, {player_name}! You have won the game!")
             break
-
+        
         # Enemy's turn
         enemy_row, enemy_col = enemy_move(player_board, enemy_previous_moves)
         if player_board[enemy_row][enemy_col] == SHIP_SYMBOL:
