@@ -75,20 +75,21 @@ def place_ships(board, num_ships, ship_size):
 # Check if a ship can be placed at the specified location
 def can_place_ship(board, row, col, ship_size, orientation):
     """Check if a ship can be placed at the specified location with spacing."""
+    # Horizontal placement checks
     if orientation == 'horizontal':
         if col + ship_size > GRID_SIZE or (col > 0 and board[row][col - 1] == SHIP_SYMBOL) or (col + ship_size < GRID_SIZE and board[row][col + ship_size] == SHIP_SYMBOL):
             return False
         for c in range(max(0, col - 1), min(GRID_SIZE, col + ship_size + 1)):
             if any(board[r][c] == SHIP_SYMBOL for r in range(max(0, row - 1), min(GRID_SIZE, row + 2))):
                 return False
-    else:  # vertical
+    # Vertical placement checks
+    else:
         if row + ship_size > GRID_SIZE or (row > 0 and board[row - 1][col] == SHIP_SYMBOL) or (row + ship_size < GRID_SIZE and board[row + ship_size][col] == SHIP_SYMBOL):
             return False
         for r in range(max(0, row - 1), min(GRID_SIZE, row + ship_size + 1)):
             if any(board[r][c] == SHIP_SYMBOL for c in range(max(0, col - 1), min(GRID_SIZE, col + 2))):
                 return False
     return True
-
 
 
 # Place the ship on the board
