@@ -58,16 +58,18 @@ def display_game_rules():
     print("Top left corner is: Row A, Column 1")
     print("'S' represents ships on your board.")
 
-
 # Function to handle player's guess
 def player_guess(board, guess_board, target_row, target_col):
     """Process the player's guess and update the guess board."""
     if board[target_row][target_col] == SHIP_SYMBOL:
         guess_board[target_row][target_col] = HIT_SYMBOL
-        print("Hit at " + chr(65 + target_row) + str(target_col + 1))
+        result = "Hit at " + chr(65 + target_row) + str(target_col + 1)
     else:
         guess_board[target_row][target_col] = MISS_SYMBOL
-        print("Miss at " + chr(65 + target_row) + str(target_col + 1))
+        result = "Miss at " + chr(65 + target_row) + str(target_col + 1)
+    print(result)
+    return result
+
 
 # Place ships randomly on the board
 def place_ships(board, num_ships, ship_size):
@@ -135,7 +137,6 @@ def player_move(guess_board):
                 print("Invalid move. Please enter a valid coordinate.")
         except (ValueError, IndexError):
             print("Invalid input. Please enter a valid coordinate.")
-
 
 
         
