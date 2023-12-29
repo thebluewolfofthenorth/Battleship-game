@@ -4,7 +4,7 @@ import random
 GRID_SIZE = 8
 NUM_SHIPS = 4
 SHIP_SIZE = 3
-SHIP_SYMBOL = '@'
+SHIP_SYMBOL = 'S'
 HIT_SYMBOL = 'X'
 MISS_SYMBOL = '0'
 
@@ -58,14 +58,15 @@ def player_guess(board, guess_board, target_row, target_col):
 # Place ships randomly on the board
 def place_ships(board, num_ships, ship_size):
     """Place ships randomly on the board."""
-    for _ in range(num_ships):
-        while True:
-            row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
-            orientation = random.choice(['horizontal', 'vertical'])
-            
-            if can_place_ship(board, row, col, ship_size, orientation):
-                set_ship(board, row, col, ship_size, orientation)
-                break
+    ships_placed = 0
+    while ships_placed < num_ships:
+        row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
+        orientation = random.choice(['horizontal', 'vertical'])
+        
+        if can_place_ship(board, row, col, ship_size, orientation):
+            set_ship(board, row, col, ship_size, orientation)
+            ships_placed += 1
+
 
 # Check if a ship can be placed at the specified location
 def can_place_ship(board, row, col, ship_size, orientation):
@@ -73,11 +74,18 @@ def can_place_ship(board, row, col, ship_size, orientation):
     if orientation == 'horizontal':
         if col + ship_size > GRID_SIZE:
             return False
-        return all(board[row][c] == '.' for c in range(col, col + ship_size))
+        for c in range(col, col + ship_size):
+            if board[row][c] != '.':
+                return False
     else:  # vertical
         if row + ship_size > GRID_SIZE:
             return False
-        return all(board[r][col] == '.' for r in range(row, row + ship_size))
+        for r in range(row, row + ship_size):
+            if board[r][col] != '.':
+                return False
+    return True
+
+
 
 # Place the ship on the board
 def set_ship(board, row, col, ship_size, orientation):
@@ -120,6 +128,15 @@ def enemy_move(player_board):
         row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         if player_board[row][col] == '.':
             return row, col
+        
+def enemy_move(player_board, previous_moves):
+    """Generate a smarter move for the enemy. Avoid repeating previous moves."""
+    while True:
+        row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
+        if (row, col) not in previous_moves:
+            previous_moves.add((row, col))
+            return row, col
+        
 def update_board_after_move(board, guess_board, row, col, is_player_turn):
     """Update the board after a move."""
     pass
@@ -141,12 +158,15 @@ def main():
     guess_board = create_guess_board(GRID_SIZE)
     place_ships(board, NUM_SHIPS, SHIP_SIZE)
 
+    enemy_previous_moves = set()  # Initialize the set to track enemy's previous moves
+
+
     while True:
         print(f"\n{player_name}'s Guesses:")
         print_board(guess_board)
 
 
-        # Player's turn
+       # Player's turn
         player_row, player_col = player_move(guess_board)
         player_guess(board, guess_board, player_row, player_col)
         update_board_after_move(board, guess_board, player_row, player_col, True)
@@ -156,7 +176,7 @@ def main():
             break
 
         # Enemy's turn
-        enemy_row, enemy_col = enemy_move(board)
+        enemy_row, enemy_col = enemy_move(board, enemy_previous_moves)
         if board[enemy_row][enemy_col] == SHIP_SYMBOL:
             print(f"Enemy hit your ship at {chr(65 + enemy_row)}{enemy_col + 1}!")
             board[enemy_row][enemy_col] = HIT_SYMBOL
