@@ -221,6 +221,9 @@ def random_enemy_guess(player_board, previous_moves):
         if (row, col) not in previous_moves:
             previous_moves.add((row, col))
             return make_enemy_guess(player_board, row, col)
+        
+def count_remaining_ships(board):
+    return sum(row.count(SHIP_SYMBOL) for row in board)
 
         
 def update_board_after_move(board, guess_board, row, col, is_player_turn):
@@ -238,10 +241,11 @@ def prompt_for_restart():
     """Ask the player if they want to restart the game."""
     while True:
         choice = input(Fore.MAGENTA + "Do you want to play again? (Please enter 'yes' to play again or 'no' to quit.): ").lower()
-        if choice in [Fore.MAGENTA + "yes", "no"]:
+        if choice in ["yes", "no"]:
             return choice == "yes"
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
+
 
 def display_initial_menu():
     """Displays the initial game menu and handles the player's choice."""
@@ -310,6 +314,7 @@ def main():
             if clear_screen_enabled and last_move_summary:
                 clear_screen()
                 print(last_move_summary)
+                print(game_status)
 
 
             if not clear_screen_enabled or last_move_summary:
@@ -319,10 +324,19 @@ def main():
                 print_board(guess_board, 'enemy', hide_ships=True)
 
                 
-        
+            # Player's turn
             player_row, player_col = player_move(guess_board)
             player_result = player_guess(enemy_board, guess_board, player_row, player_col)
-            last_move_summary = f"Last Move: {player_result}"
+            last_move_summary =Fore.CYAN + f"Your move result: {player_result}"  # Store last move result
+            print(Fore.CYAN + "Your move result: " + player_result)
+            
+
+            # Display game status update
+            player_ships_remaining = count_remaining_ships(player_board)
+            enemy_ships_remaining = count_remaining_ships(enemy_board)
+            game_status = Fore.CYAN + f"Your ships remaining: {player_ships_remaining}, Enemy ships remaining: {enemy_ships_remaining}"
+            print(Fore.CYAN + f"Your ships remaining: {player_ships_remaining}")
+            print(Fore.CYAN + f"Enemy ships remaining: {enemy_ships_remaining}")
 
 
             if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
@@ -330,6 +344,7 @@ def main():
                 player_wins += 1
                 break
 
+            # Enemy's turn
             enemy_result, hit_coords = enemy_move(player_board, enemy_previous_moves, last_hit)
             last_move_summary += f" | {enemy_result}"
             if hit_coords:
@@ -339,14 +354,19 @@ def main():
 
 
             if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
-                print(Fore.RED + f"Sorry, {player_name}, you lost the game.")
-                player_losses += 1
+                player_hits = sum(row.count(HIT_SYMBOL) for row in guess_board)
+                player_misses = sum(row.count(MISS_SYMBOL) for row in guess_board)
+                print(Fore.GREEN + f"Game Over! You had {player_hits} hits and {player_misses} misses.")
                 break
+
+            
                 
          # Ask if the player wants to play again or quit
         if not prompt_for_restart():
             print("Thanks for playing! Goodbye!")
             break
+
+        
 
 if __name__ == "__main__":
     main()
