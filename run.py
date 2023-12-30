@@ -192,7 +192,7 @@ def main():
 
         enemy_previous_moves = set()
         last_move_summary = ""
-        test_moves = 0  # Counter for testing
+        
 
         while True:
             if clear_screen_enabled and last_move_summary:
@@ -210,11 +210,6 @@ def main():
             player_result = player_guess(enemy_board, guess_board, player_row, player_col)
             last_move_summary = f"Last Move: {player_result}"
 
-                # Test condition to simulate game end
-            test_moves += 1
-            if test_moves >= 2:  # Change this number to control when the game ends
-                print(f"Test ending game after {test_moves} moves.")
-                break
 
             if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
                 print(f"Congratulations, {player_name}! You have won the game!")
