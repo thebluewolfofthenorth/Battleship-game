@@ -150,7 +150,7 @@ def enemy_move(player_board, previous_moves):
             else:
                 player_board[row][col] = MISS_SYMBOL
                 return f"Enemy missed at {chr(65 + row)}{col + 1}."
-
+            
         
 def update_board_after_move(board, guess_board, row, col, is_player_turn):
     """Update the board after a move."""
@@ -163,70 +163,79 @@ def is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
     total_ship_segments = NUM_SHIPS * SHIP_SIZE
     return player_hits == total_ship_segments or enemy_hits == total_ship_segments
 
+def prompt_for_restart():
+    """Ask the player if they want to restart the game."""
+    while True:
+        choice = input("Do you want to play again? (Please enter 'yes' to play again or 'no' to quit.): ").lower()
+        if choice in ["yes", "no"]:
+            return choice == "yes"
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
 
-def main():
-    """Main function to run the Battleship game."""
-    player_name = get_player_name()
-    clear_screen_enabled = get_player_preference()
-    last_move_summary = ""  # Initialize an empty string for the last move summary
-
-    print(f"Welcome to Battleship, {player_name}!")
-
-    player_board = create_board(GRID_SIZE)  # Player's board
-    enemy_board = create_board(GRID_SIZE)  # Enemy's board
-    guess_board = create_guess_board(GRID_SIZE)  # Player's guess board
-
-    place_ships(player_board, NUM_SHIPS, SHIP_SIZE)  # Place player's ships
-    place_ships(enemy_board, NUM_SHIPS, SHIP_SIZE)  # Place enemy's ships
-
-    enemy_previous_moves = set()  # Track enemy's previous moves
 
 def main():
     display_game_rules() 
-
     player_name = get_player_name()
     clear_screen_enabled = get_player_preference()
-    last_move_summary = ""
-
-    print(f"Welcome to Battleship, {player_name}!")
-
-    player_board = create_board(GRID_SIZE)
-    enemy_board = create_board(GRID_SIZE)
-    guess_board = create_guess_board(GRID_SIZE)
-
-    place_ships(player_board, NUM_SHIPS, SHIP_SIZE)
-    place_ships(enemy_board, NUM_SHIPS, SHIP_SIZE)
-
-    enemy_previous_moves = set()
-
+    player_wins = 0  # Counter for player's wins
+    player_losses = 0  # Counter for player's losses
+    
     while True:
-        if clear_screen_enabled and last_move_summary:
-            clear_screen()
-            print(last_move_summary)
+        print(f"Welcome to Battleship, {player_name}!")
 
-        if not clear_screen_enabled or last_move_summary:
-            print(f"\n{player_name}'s Board:")
-            print_board(player_board)
-            print(f"\n{player_name}'s Guesses on Enemy's Board:")
-            print_board(guess_board, hide_ships=True)
+        player_board = create_board(GRID_SIZE)
+        enemy_board = create_board(GRID_SIZE)
+        guess_board = create_guess_board(GRID_SIZE)
 
-        player_row, player_col = player_move(guess_board)
-        player_result = player_guess(enemy_board, guess_board, player_row, player_col)
-        last_move_summary = f"Last Move: {player_result}"
+        place_ships(player_board, NUM_SHIPS, SHIP_SIZE)
+        place_ships(enemy_board, NUM_SHIPS, SHIP_SIZE)
 
-        if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
-            print(f"Congratulations, {player_name}! You have won the game!")
+        enemy_previous_moves = set()
+        last_move_summary = ""
+        test_moves = 0  # Counter for testing
+
+        while True:
+            if clear_screen_enabled and last_move_summary:
+                clear_screen()
+                print(last_move_summary)
+
+
+            if not clear_screen_enabled or last_move_summary:
+                print(f"\n{player_name}'s Board:")
+                print_board(player_board)
+                print(f"\n{player_name}'s Guesses on Enemy's Board:")
+                print_board(guess_board, hide_ships=True)
+
+            player_row, player_col = player_move(guess_board)
+            player_result = player_guess(enemy_board, guess_board, player_row, player_col)
+            last_move_summary = f"Last Move: {player_result}"
+
+                # Test condition to simulate game end
+            test_moves += 1
+            if test_moves >= 2:  # Change this number to control when the game ends
+                print(f"Test ending game after {test_moves} moves.")
+                break
+
+            if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
+                print(f"Congratulations, {player_name}! You have won the game!")
+                player_wins += 1
+                break
+
+            enemy_result = enemy_move(player_board, enemy_previous_moves)
+            last_move_summary += f" | {enemy_result}"
+
+            if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
+                print(f"Sorry, {player_name}, you lost the game.")
+                player_losses += 1
+                break
+
+            if not clear_screen_enabled:
+                print(last_move_summary)
+                
+         # Ask if the player wants to play again or quit
+        if not prompt_for_restart():
+            print("Thanks for playing! Goodbye!")
             break
-
-        enemy_result = enemy_move(player_board, enemy_previous_moves)
-        last_move_summary += f" | {enemy_result}"
-
-        if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
-            print(f"Sorry, {player_name}, you lost the game.")
-            break
-
-        if not clear_screen_enabled:
-            print(last_move_summary)
 
 if __name__ == "__main__":
     main()
