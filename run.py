@@ -35,14 +35,21 @@ def create_board(size):
     """Initialize the game board with the specified size."""
     return [["."] * size for _ in range(size)]
 
-# Function to display the board
+
+
 def print_board(board, board_type, hide_ships=False):
-    """Prints the game board with color-coded symbols."""
-        # Choose color based on board type
+    """Prints the game board with color-coded symbols and borders."""
     board_color = Fore.GREEN if board_type == 'player' else Fore.YELLOW
-    header = "  " + " ".join(str(i + 1) for i in range(GRID_SIZE))
+
+    # Create top border
+    top_border = "  +" + "---+" * GRID_SIZE
+    print(board_color + top_border)
+
+    # Print header row with column numbers
+    header = "   " + "   ".join(str(i + 1) for i in range(GRID_SIZE))
     print(board_color + header)
 
+    # Print each row with a border
     for row_index, row in enumerate(board):
         colored_row = [
             Fore.RED + HIT_SYMBOL if cell == HIT_SYMBOL else
@@ -51,7 +58,11 @@ def print_board(board, board_type, hide_ships=False):
             board_color + cell
             for cell in row
         ]
-        print(board_color + chr(65 + row_index) + " " + " ".join(colored_row))
+        row_str = " | ".join(colored_row)
+        print(board_color + f"{chr(65 + row_index)} | {row_str} |")
+
+    # Create bottom border
+    print(board_color + top_border)
 
 
 
@@ -86,11 +97,15 @@ def player_guess(board, guess_board, target_row, target_col):
 def place_ships(board, num_ships, ship_size):
     """Place ships randomly on the board."""
     ships_placed = 0
+    # Loop until the specified number of ships are placed
     while ships_placed < num_ships:
+        # Randomly choose a starting position and orientation for the ship
         row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         orientation = random.choice(['horizontal', 'vertical'])
         
+        # Check if the ship can be placed at the chosen position
         if can_place_ship(board, row, col, ship_size, orientation):
+            # Place the ship and increment the counter
             set_ship(board, row, col, ship_size, orientation)
             ships_placed += 1
 
@@ -175,11 +190,13 @@ def player_move(guess_board):
 def enemy_move(player_board, previous_moves, last_hit):
     """Generate a move for the enemy with a strategy after a hit."""
     if last_hit and isinstance(last_hit, tuple) and len(last_hit) == 2 and all(isinstance(coord, int) for coord in last_hit):
-        # Check adjacent cells in a specific order
+        # Strategy: Check adjacent cells in a specific order after a hit
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:  # Up, down, left, right
             new_row, new_col = last_hit[0] + dx, last_hit[1] + dy
+            # Validate the new position is within the board and not previously tried
             if 0 <= new_row < GRID_SIZE and 0 <= new_col < GRID_SIZE:
                 if (new_row, new_col) not in previous_moves and player_board[new_row][new_col] != MISS_SYMBOL:
+                    # Add the new move to previous moves and process the guess
                     previous_moves.add((new_row, new_col))
                     return make_enemy_guess(player_board, new_row, new_col)
 
