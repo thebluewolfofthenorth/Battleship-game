@@ -1,3 +1,5 @@
+from colorama import init, Fore, Back, Style
+init(autoreset=True)  # Initialize Colorama and automatically reset styles after each print statement
 import os
 import random
 
@@ -172,8 +174,47 @@ def prompt_for_restart():
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
 
+def display_initial_menu():
+    """Displays the initial game menu and handles the player's choice."""
+    while True:
+        print(r"""
+                  |__
+                  |\/
+                  ---
+                  / | [
+           !      | |||
+         _/|     _/|-++'
+     +  +--|    |--|--|_ |-
+  { /|__|  |/\__|  |--- |||__/
+ +---------------___[}-_===_.'____                 /\
+ /\   \____    \_       \ \_____|__ \           /    \  
+  / \   \___>   \ \______]_|__      \_________/_       \ 
+ /   \______-/  \         /         /     |  /           \ 
+/___/___________|        /_________/     /__________/_  
+                   \    /             \  /   /      
+                    \  /               \/   /        
+                     \/                   \/
+    """)
+        print("-------------------------------")
+        print("      Battleship Game")
+        print("-------------------------------")
+        print("1. Start Game")
+        print("2. Quit")
+        choice = input("Select an option: ")
+
+        if choice == '1':
+            return True  # Continue to the game
+        elif choice == '2':
+            return False  # Exit the game
+        else:
+            print("Invalid choice. Please select 1 or 2.")
+
 
 def main():
+    if not display_initial_menu():
+        print("Exiting the game. Goodbye!")
+        return
+
     display_game_rules() 
     player_name = get_player_name()
     clear_screen_enabled = get_player_preference()
