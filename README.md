@@ -23,7 +23,7 @@ The Battleship game is a classic strategy game reimagined in a modern, command-l
 
 ## Demo
 
-The live demo of the game is in progress. https://thebluewolfofthenorth.github.io/Rock-Paper-Scissors-Lizard-Spock_Game/
+The live demo of the game is in progress. https://battleship-the-game-1a6cef4d1685.herokuapp.com/
 
 ## Technologies Used
 
@@ -218,6 +218,38 @@ no errrors where rapported there
 [Screenshot of test](./img/rython-test.png) 
 
 
+### Bugs:
+
+ - **TypeError with Enemy Moves**:
+
+    - Issue: Encountered a TypeError when trying to concatenate strings and integers in the enemy move logic. This occurred primarily when displaying the enemy's move coordinates.
+
+    - Solution: Modified the code to properly format strings and integers, ensuring that coordinate information is correctly concatenated and displayed without causing type mismatches.
+
+- **Enhanced Enemy AI Logic**:
+
+    - Issue: Initially, the enemy AI was making random guesses without any strategy.
+
+    - Solution: Implemented a smarter AI that follows up on successful hits by targeting adjacent cells, thus improving its chances of hitting more parts of the ship.
+
+- **Last Move Display**:
+
+    - Issue: Difficulty in displaying the last moves of both the player and the enemy in a clear and consistent manner.
+
+    - Solution: Adjusted the game loop to include a summary of the last moves for both the player and the enemy, making it visible after each turn.
+- **Clear Screen Feature**:
+
+    - Issue: Inconsistencies in how the screen was cleared and how information was displayed when the clear screen option was enabled or disabled.
+
+    - Solution: Refined the logic to ensure that the screen clearing functionality works as intended, and that game information (like board state and last moves) is correctly displayed based on the player's preference for screen clearing.
+
+- **Input Validation and Error Handling**:
+
+    - Issue: Ensuring robustness in player input, especially in handling invalid moves and coordinates.
+
+    - Solution: Implemented comprehensive checks to validate player inputs, ensuring moves are within the grid bounds and have not been previously guessed
+
+
 #### Unresolved Bugs:
 In VSC I was getting a minor error on colorama
 - **Import "colorama" could not be resolved from source**
@@ -226,7 +258,15 @@ I try to reinstall but it seems that it never work.
 
 ## Deployment 
 
-This site was depolyed to GitHub pages. The steps to deploy a site are shown below:
+
+- Clone repository from Codeinstitue to get the files need it for me to deploy in Herokuapp.
+
+- Create a new app in Herokuapp.
+
+- set up the nessesary builbacks first Python and then Node.js
+
+- Link Github respository with Herokuapp by goint into deploy in Herokuapp and then link with Github and search for the project name. 
+
 
 1. In the GitHub Repository called <b>battleship-game</b> click on the <b>Settings</b> button on the Repoitory navigation menu.
 
@@ -238,7 +278,7 @@ This site was depolyed to GitHub pages. The steps to deploy a site are shown bel
 
 5. Once you have selected the main branch, the page will automatically refresh to show a detailed ribbon display indicating that the deployment was successful.
 
-To get to the live link of the GitHub repository - click here: <a href="https://thebluewolfofthenorth.github.io/yoga-mindfullnes-app/">The Battleship Game
+To get to the live link of the Herokuapp page - click here: <a href="https://battleship-the-game-1a6cef4d1685.herokuapp.com/">The Battleship Game
 </a>
 
 
@@ -276,11 +316,5 @@ You also can create and name the directory where the clone should be saved in, w
 
    ## Acknowledgements:
 
-   thanks to my mentor Ronan to help me along to the completion of this project
-
-   - I chose to build a simple game with the intention of keeping it straightforward and saving time to incorporate more dynamics and animations. However, this didn't quite work out as planned. I encountered minor issues, like z-index problems, which caused significant challenges and took a long time to diagnose and resolve. In the end, I was quite satisfied with the game's functionality, especially the JavaScript aspects. The design could have been better, but with more time and if this were a full-time job, I believe I could have created something truly impressive.
-
-
-## note:
-
-- I spend a lot of time learning about simple structure ideas not covered in the course, requiring extensive reading from w3schools on the basics. All of my code is self-created. It was disappointing to see my game fail the Lighthouse test on desktop due to several issues I wasn't aware of. It's possible to fix these, but I'll need more time to work on it and to further my understanding of the underlying concepts.
+   thanks to my mentor Ronan to help me along to the completion of this project and thanks for the good ideas.
+   I manage to do most of the work myself but it took a lot of time to find the right code and the right way to put them together,
