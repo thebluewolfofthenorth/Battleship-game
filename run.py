@@ -11,17 +11,24 @@ SHIP_SYMBOL = 'S'
 HIT_SYMBOL = 'X'
 MISS_SYMBOL = '0'
 
+
 def clear_screen():
     """Clears the terminal screen."""
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
 def get_player_preference():
     """Asks the player if they want to enable screen clearing."""
-    choice = input(Fore.MAGENTA +  "Do you want to clear the screen each turn? (yes/no): ").lower()
+    choice = input(Fore.MAGENTA + "Do you want to clear the screen each turn? (yes/no): ").lower()
     return choice == "yes"
 
+
 def get_player_name():
-    """Prompt the player to enter their name, ensuring it's valid (letters only, single word)."""
+
+    """
+    Prompt the player to enter their name,
+    ensuring it's valid (letters only, single word).
+    """
     while True:
         name = input(Fore.MAGENTA + "Please enter your name (letters only, no spaces): ")
         if name.isalpha() and " " not in name:
@@ -34,7 +41,6 @@ def get_player_name():
 def create_board(size):
     """Initialize the game board with the specified size."""
     return [["."] * size for _ in range(size)]
-
 
 
 def print_board(board, board_type, hide_ships=False):
@@ -65,7 +71,6 @@ def print_board(board, board_type, hide_ships=False):
     print(board_color + top_border)
 
 
-
 # Initialize the guess board
 def create_guess_board(size):
     """Initialize the guess board with the specified size."""
@@ -83,6 +88,8 @@ def display_game_rules():
     print(Fore.CYAN + "'S' represents ships on your board.")
 
 # Function to handle player's guess
+
+
 def player_guess(board, guess_board, target_row, target_col):
     """Process the player's guess and update the guess board."""
     if board[target_row][target_col] == SHIP_SYMBOL:
@@ -102,12 +109,13 @@ def place_ships(board, num_ships, ship_size):
         # Randomly choose a starting position and orientation for the ship
         row, col = random.randint(0, GRID_SIZE - 1), random.randint(0, GRID_SIZE - 1)
         orientation = random.choice(['horizontal', 'vertical'])
-        
+
         # Check if the ship can be placed at the chosen position
         if can_place_ship(board, row, col, ship_size, orientation):
             # Place the ship and increment the counter
             set_ship(board, row, col, ship_size, orientation)
             ships_placed += 1
+
 
 def is_valid_placement(board, start_row, start_col, ship_size, orientation):
     """
@@ -125,15 +133,15 @@ def is_valid_placement(board, start_row, start_col, ship_size, orientation):
         for r in range(start_row, start_row + ship_size):
             if board[r][start_col] == SHIP_SYMBOL:
                 return False
-    
-    return True
 
+    return True
 
 
 # Check if a ship can be placed at the specified location
 def can_place_ship(board, row, col, ship_size, orientation):
-    """ 
-    Check if a ship can be placed at the specified location with proper spacing.
+    """
+    Check if a ship can be placed at
+    the specified location with proper spacing.
     """
     # Ensure the ship doesn't overlap with another ship and is within grid boundaries
     if not is_valid_placement(board, row, col, ship_size, orientation):
@@ -204,7 +212,6 @@ def enemy_move(player_board, previous_moves, last_hit):
     return random_enemy_guess(player_board, previous_moves)
 
 
-
 def make_enemy_guess(player_board, row, col):
     """Process the enemy's guess."""
     if player_board[row][col] == SHIP_SYMBOL:
@@ -214,6 +221,7 @@ def make_enemy_guess(player_board, row, col):
         player_board[row][col] = MISS_SYMBOL
         return None, f"Enemy missed at {chr(65 + row)}{col + 1}."
 
+
 def random_enemy_guess(player_board, previous_moves):
     """Generate a random move for the enemy."""
     while True:
@@ -221,14 +229,16 @@ def random_enemy_guess(player_board, previous_moves):
         if (row, col) not in previous_moves:
             previous_moves.add((row, col))
             return make_enemy_guess(player_board, row, col)
-        
+
+
 def count_remaining_ships(board):
     return sum(row.count(SHIP_SYMBOL) for row in board)
 
-        
+
 def update_board_after_move(board, guess_board, row, col, is_player_turn):
     """Update the board after a move."""
     pass
+
 
 def is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
     """Check if the game is over (all ships on either board have been hit)."""
@@ -236,6 +246,7 @@ def is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
     enemy_hits = sum(row.count(HIT_SYMBOL) for row in guess_board)
     total_ship_segments = NUM_SHIPS * SHIP_SIZE
     return player_hits == total_ship_segments or enemy_hits == total_ship_segments
+
 
 def prompt_for_restart():
     """Ask the player if they want to restart the game."""
@@ -260,12 +271,12 @@ def display_initial_menu():
      +  +--|    |--|--|_ |-
   { /|__|  |/\__|  |--- |||__/
  +---------------___[}-_===_.'____                 /\
- /\   \____    \_       \ \_____|__ \           /    \  
-  / \   \___>   \ \______]_|__      \_________/_       \ 
- /   \______-/  \         /         /     |  /           \ 
-/___/___________|        /_________/     /__________/_  
-                   \    /             \  /   /      
-                    \  /               \/   /        
+ /\   \____    \_       \ \_____|__ \           /    \
+  / \   \___>   \ \______]_|__      \_________/_       \
+ /   \______-/  \         /         /     |  /           \
+/___/___________|        /_________/     /__________/_
+                   \    /             \  /   /
+                    \  /               \/   /
                      \/                   \/
     """)
         print(Fore.YELLOW + "-------------------------------")
@@ -288,13 +299,12 @@ def main():
         print("Exiting the game. Goodbye!")
         return
 
-    display_game_rules() 
+    display_game_rules()
     player_name = get_player_name()
     clear_screen_enabled = get_player_preference()
     player_wins = 0  # Counter for player's wins
     player_losses = 0  # Counter for player's losses
-    
-   
+
     while True:
         print(f"Welcome to Battleship, {player_name}!")
 
@@ -307,8 +317,7 @@ def main():
 
         enemy_previous_moves = set()
         last_move_summary = ""
-        last_hit = None 
-        
+        last_hit = None
 
         while True:
             if clear_screen_enabled and last_move_summary:
@@ -316,20 +325,19 @@ def main():
                 print(last_move_summary)
                 print(game_status)
 
-
             if not clear_screen_enabled or last_move_summary:
                 print(Fore.GREEN + f"\n{player_name}'s Board:")
                 print_board(player_board, 'player')
                 print(Fore.GREEN + f"\n{player_name}'s Guesses on Enemy's Board:")
                 print_board(guess_board, 'enemy', hide_ships=True)
 
-                
             # Player's turn
+
             player_row, player_col = player_move(guess_board)
             player_result = player_guess(enemy_board, guess_board, player_row, player_col)
-            last_move_summary =Fore.CYAN + f"Your move result: {player_result}"  # Store last move result
+
+            last_move_summary = Fore.CYAN + f"Your move result: {player_result}"  # Store last move result
             print(Fore.CYAN + "Your move result: " + player_result)
-            
 
             # Display game status update
             player_ships_remaining = count_remaining_ships(player_board)
@@ -337,7 +345,6 @@ def main():
             game_status = Fore.CYAN + f"Your ships remaining: {player_ships_remaining}, Enemy ships remaining: {enemy_ships_remaining}"
             print(Fore.CYAN + f"Your ships remaining: {player_ships_remaining}")
             print(Fore.CYAN + f"Enemy ships remaining: {enemy_ships_remaining}")
-
 
             if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
                 print(Fore.RED + f"Congratulations, {player_name}! You have won the game!")
@@ -352,21 +359,17 @@ def main():
             else:
                 last_hit = None  # Reset last_hit if the enemy misses
 
-
             if is_game_over(player_board, guess_board, NUM_SHIPS, SHIP_SIZE):
                 player_hits = sum(row.count(HIT_SYMBOL) for row in guess_board)
                 player_misses = sum(row.count(MISS_SYMBOL) for row in guess_board)
                 print(Fore.GREEN + f"Game Over! You had {player_hits} hits and {player_misses} misses.")
                 break
 
-            
-                
-         # Ask if the player wants to play again or quit
+        # Ask if the player wants to play again or quit
         if not prompt_for_restart():
             print("Thanks for playing! Goodbye!")
             break
 
-        
 
 if __name__ == "__main__":
     main()
