@@ -209,13 +209,26 @@ This color scheme adds clarity and excitement to the game, making Battleship an 
 
 ## Testing
 
-Please refer to <a href="https://github.com/thebluewolfofthenorth/yoga-mindfullnes-app"><em>here<em></a> for more information on testing PUST-Yoga-and-mindfullnes
+I used the <a href="https://pep8ci.herokuapp.com/#">PEP3</a> where I got no mayor erros, all of them where about line to long but those are part of my code so I wasnt sure what it mean 
+
+[Screenshot of test](./img/PEP3-test.png) 
+
+because of that I use also <a href="https://extendsclass.com/python-tester.html">Python-tester</a> to check if the code was working as it should. 
+no errrors where rapported there
+[Screenshot of test](./img/rython-test.png) 
+
+
+#### Unresolved Bugs:
+In VSC I was getting a minor error on colorama
+- **Import "colorama" could not be resolved from source**
+I try to reinstall but it seems that it never work.
+
 
 ## Deployment 
 
 This site was depolyed to GitHub pages. The steps to deploy a site are shown below:
 
-1. In the GitHub Repository called <b>yoga-mindfullnes-app</b> click on the <b>Settings</b> button on the Repoitory navigation menu.
+1. In the GitHub Repository called <b>battleship-game</b> click on the <b>Settings</b> button on the Repoitory navigation menu.
 
 2. In <b>Settings</b> on the left side, go down to the <b>Pages</b> item and click on it.
 
@@ -225,7 +238,7 @@ This site was depolyed to GitHub pages. The steps to deploy a site are shown bel
 
 5. Once you have selected the main branch, the page will automatically refresh to show a detailed ribbon display indicating that the deployment was successful.
 
-To get to the live link of the GitHub repository - click here: <a href="https://thebluewolfofthenorth.github.io/yoga-mindfullnes-app/">https://thebluewolfofthenorth.github.io/Rock-Paper-Scissors-Lizard-Spock_Game/
+To get to the live link of the GitHub repository - click here: <a href="https://thebluewolfofthenorth.github.io/yoga-mindfullnes-app/">The Battleship Game
 </a>
 
 
